@@ -1,0 +1,35 @@
+name: Listas C++ CI
+
+on: [push]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-18.04
+FROM ubuntu:16.04
+
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get install g++ valgrind cmake -y
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - name: Install Requirements
+      run: |
+        apt-get update
+        apt-get upgrade
+        apt-get install g++ valgrind cmake
+        
+    - name: Setup cmake
+      run: cmake .
+
+    - name: Tests
+      run: |
+        make correrTests
+        ./correrTests
+
+    - name: Memory Leaks Check
+      run: make correrValgrind
